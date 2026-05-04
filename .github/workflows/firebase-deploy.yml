@@ -22,6 +22,12 @@ jobs:
         run: npm ci
       - name: Build Next.js App
         run: npm run build
+        env:
+          NEXT_PUBLIC_FIREBASE_API_KEY: "AIzaSyD2Zu_RJntDchIeHKoujZyfGlxusoGMbeI"
+          NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN: "didactikids-dcfe5.firebaseapp.com"
+          NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET: "didactikids-dcfe5.firebasestorage.app"
+          NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID: "878264082601"
+          NEXT_PUBLIC_FIREBASE_APP_ID: "1:878264082601:web:451bdbb67b49bd8ca1c9b8"
       - name: Deploy to Firebase
         uses: FirebaseExtended/action-hosting-deploy@v0
         with:
