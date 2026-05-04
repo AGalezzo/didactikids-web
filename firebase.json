@@ -1,5 +1,6 @@
 {
   "hosting": {
+    "site": "didactikids-dcfe5",
     "public": "out",
     "ignore": [
       "firebase.json",
