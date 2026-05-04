@@ -2,6 +2,8 @@
 
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { Product } from '@/lib/data';
+import { auth } from '@/lib/firebase';
+import { onAuthStateChanged, signOut } from 'firebase/auth';
 
 interface CartItem extends Product {
   quantity: number;
@@ -20,6 +22,9 @@ interface StoreContextType {
   setIsLoginModalOpen: (open: boolean) => void;
   isPaymentModalOpen: boolean;
   setIsPaymentModalOpen: (open: boolean) => void;
+  user: any | null;
+  isAuthReady: boolean;
+  logOut: () => Promise<void>;
 }
 
 const StoreContext = createContext<StoreContextType | undefined>(undefined);
@@ -30,6 +35,21 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
   const [currentCategory, setCurrentCategory] = useState('all');
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
   const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
+  const [user, setUser] = useState<any | null>(null);
+  const [isAuthReady, setIsAuthReady] = useState(false);
+
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (u) => {
+      setUser(u);
+      setIsAuthReady(true);
+    });
+    return () => unsubscribe();
+  }, []);
+
+  const logOut = async () => {
+    await signOut(auth);
+    window.location.href = '/';
+  };
 
   // Load cart from localStorage on mount
   useEffect(() => {
@@ -92,7 +112,8 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
       isCartOpen, setIsCartOpen,
       currentCategory, setCurrentCategory,
       isLoginModalOpen, setIsLoginModalOpen,
-      isPaymentModalOpen, setIsPaymentModalOpen
+      isPaymentModalOpen, setIsPaymentModalOpen,
+      user, isAuthReady, logOut
     }}>
       {children}
     </StoreContext.Provider>

@@ -18,6 +18,8 @@ export const metadata: Metadata = {
   description: "Soluciones Educativas Premium. Material didáctico de alta calidad para instituciones educativas en Colombia.",
 };
 
+import { StoreProvider } from "@/context/StoreContext";
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -31,7 +33,9 @@ export default function RootLayout({
       <body
         className={`${playfair.variable} ${poppins.variable} antialiased`}
       >
-        {children}
+        <StoreProvider>
+          {children}
+        </StoreProvider>
       </body>
     </html>
   );

@@ -9,5 +9,15 @@ query GetUser($id: String!) @auth(level: PUBLIC) {
     id
     email
     role
+    status
+  }
+}
+
+query GetAllUsers @auth(level: PUBLIC) {
+  users {
+    id
+    email
+    role
+    status
   }
 }

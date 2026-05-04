@@ -28,6 +28,7 @@ jobs:
           NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET: "didactikids-dcfe5.firebasestorage.app"
           NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID: "878264082601"
           NEXT_PUBLIC_FIREBASE_APP_ID: "1:878264082601:web:451bdbb67b49bd8ca1c9b8"
+          NEXT_PUBLIC_APP_VERSION: "1.0.${{ github.run_number }}"
       - name: Deploy to Firebase
         uses: FirebaseExtended/action-hosting-deploy@v0
         with:

@@ -2,4 +2,5 @@ type User @table {
   id: String!
   email: String!
   role: String!
+  status: String!
 }

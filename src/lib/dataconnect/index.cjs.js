@@ -21,6 +21,34 @@ exports.createUser = function createUser(dcOrVars, vars) {
 }
 ;
 
+const updateUserStatusRef = (dcOrVars, vars) => {
+  const { dc: dcInstance, vars: inputVars} = validateArgs(connectorConfig, dcOrVars, vars, true);
+  dcInstance._useGeneratedSdk();
+  return mutationRef(dcInstance, 'UpdateUserStatus', inputVars);
+}
+updateUserStatusRef.operationName = 'UpdateUserStatus';
+exports.updateUserStatusRef = updateUserStatusRef;
+
+exports.updateUserStatus = function updateUserStatus(dcOrVars, vars) {
+  const { dc: dcInstance, vars: inputVars } = validateArgs(connectorConfig, dcOrVars, vars, true);
+  return executeMutation(updateUserStatusRef(dcInstance, inputVars));
+}
+;
+
+const updateUserRoleRef = (dcOrVars, vars) => {
+  const { dc: dcInstance, vars: inputVars} = validateArgs(connectorConfig, dcOrVars, vars, true);
+  dcInstance._useGeneratedSdk();
+  return mutationRef(dcInstance, 'UpdateUserRole', inputVars);
+}
+updateUserRoleRef.operationName = 'UpdateUserRole';
+exports.updateUserRoleRef = updateUserRoleRef;
+
+exports.updateUserRole = function updateUserRole(dcOrVars, vars) {
+  const { dc: dcInstance, vars: inputVars } = validateArgs(connectorConfig, dcOrVars, vars, true);
+  return executeMutation(updateUserRoleRef(dcInstance, inputVars));
+}
+;
+
 const checkAnyUserExistsRef = (dc) => {
   const { dc: dcInstance} = validateArgs(connectorConfig, dc, undefined);
   dcInstance._useGeneratedSdk();
@@ -48,5 +76,20 @@ exports.getUser = function getUser(dcOrVars, varsOrOptions, options) {
   
   const { dc: dcInstance, vars: inputVars, options: inputOpts } = validateArgsWithOptions(connectorConfig, dcOrVars, varsOrOptions, options, true, true);
   return executeQuery(getUserRef(dcInstance, inputVars), inputOpts && inputOpts.fetchPolicy);
+}
+;
+
+const getAllUsersRef = (dc) => {
+  const { dc: dcInstance} = validateArgs(connectorConfig, dc, undefined);
+  dcInstance._useGeneratedSdk();
+  return queryRef(dcInstance, 'GetAllUsers');
+}
+getAllUsersRef.operationName = 'GetAllUsers';
+exports.getAllUsersRef = getAllUsersRef;
+
+exports.getAllUsers = function getAllUsers(dcOrOptions, options) {
+  
+  const { dc: dcInstance, vars: inputVars, options: inputOpts } = validateArgsWithOptions(connectorConfig, dcOrOptions, options, undefined,false, false);
+  return executeQuery(getAllUsersRef(dcInstance, inputVars), inputOpts && inputOpts.fetchPolicy);
 }
 ;

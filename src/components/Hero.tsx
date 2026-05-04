@@ -1,42 +1,53 @@
-"use client";
+'use client';
 
 import { useStore } from '@/context/StoreContext';
 
 export default function Hero() {
-  const { setIsLoginModalOpen } = useStore();
+  const { user, setIsLoginModalOpen } = useStore();
 
   return (
-    <section id="inicio" className="relative h-64 md:h-72 lg:h-80 overflow-hidden">
-      <img 
-        src="https://sfile.chatglm.cn/images-ppt/f279284927dc.jpeg" 
-        alt="Educación"
-        className="w-full h-full object-cover" 
-      />
-      <div className="absolute inset-0 bg-gradient-to-r from-white/90 via-white/80 to-white/50"></div>
-      <div className="absolute inset-0 flex items-center shrink-0">
-        <div className="max-w-7xl mx-auto px-4 md:px-8 lg:px-16 w-full">
-          <div className="max-w-xl">
-            <div className="inline-block border border-primary px-4 py-1.5 mb-4 md:mb-6">
-              <span className="text-xs md:text-sm font-medium text-primary">
-                NIT: 901.859.229 - 5 • Barranquilla
-              </span>
-            </div>
-            <h1 className="font-display text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 leading-tight mb-3 md:mb-4">
-              Soluciones<br />
-              <span className="text-primary">Educativas</span><br />
-              <span className="text-2xl md:text-3xl lg:text-4xl">Premium</span>
-            </h1>
-            <p className="text-gray-600 text-sm md:text-base mb-6 md:mb-8">
-              Material didáctico de alta calidad para instituciones educativas en Colombia
-            </p>
-            <div className="flex gap-3">
-              <a href="#catalogo" className="btn-primary inline-flex items-center text-sm md:text-base py-2 md:py-3 no-underline">
-                Ver Catálogo
-              </a>
-              <button onClick={() => setIsLoginModalOpen(true)} className="btn-secondary text-sm md:text-base py-2 md:py-3">
-                Acceso Clientes
+    <section className="relative bg-[#F7F7F5] overflow-hidden min-h-[80vh] flex items-center">
+      {/* Background decoration */}
+      <div className="absolute top-0 right-0 -mr-20 -mt-20 w-96 h-96 bg-[#EAE4DC] rounded-full blur-3xl opacity-50"></div>
+      <div className="absolute bottom-0 left-0 -ml-20 -mb-20 w-80 h-80 bg-[#B23A2A]/10 rounded-full blur-3xl opacity-50"></div>
+      
+      <div className="container mx-auto px-6 relative z-10">
+        <div className="max-w-3xl mx-auto text-center space-y-8">
+          <div className="inline-block border border-[#2C2F5A]/20 px-4 py-1.5 mb-2 rounded-full bg-white/50 backdrop-blur-sm">
+            <span className="text-xs md:text-sm font-medium text-[#2C2F5A]">
+              NIT: 901.859.229 - 5 • Colombia
+            </span>
+          </div>
+          <h1 className="text-5xl md:text-7xl font-display font-bold text-[#2C2F5A] leading-tight">
+            Aprender nunca fue tan <span className="text-[#B23A2A] italic">divertido</span>
+          </h1>
+          <p className="text-lg md:text-xl text-[#2B2B2B] font-body leading-relaxed max-w-2xl mx-auto">
+            Descubre nuestra selección exclusiva de materiales didácticos, institucionales y dotación para espacios educativos. Calidad premium para el desarrollo integral.
+          </p>
+          <div className="flex flex-col sm:flex-row justify-center gap-4 pt-4">
+            <button 
+              className="bg-[#B23A2A] text-white px-8 py-4 rounded-full font-semibold text-lg hover:bg-[#2C2F5A] transition-all duration-300 shadow-lg shadow-[#B23A2A]/30 transform hover:-translate-y-1"
+              onClick={() => {
+                document.getElementById('catalogo')?.scrollIntoView({ behavior: 'smooth' });
+              }}
+            >
+              Explorar Catálogo
+            </button>
+            {!user ? (
+              <button 
+                className="bg-transparent border-2 border-[#2C2F5A] text-[#2C2F5A] px-8 py-4 rounded-full font-semibold text-lg hover:bg-[#2C2F5A] hover:text-white transition-all duration-300"
+                onClick={() => setIsLoginModalOpen(true)}
+              >
+                Acceso Institucional
               </button>
-            </div>
+            ) : (
+              <button 
+                className="bg-transparent border-2 border-[#2C2F5A] text-[#2C2F5A] px-8 py-4 rounded-full font-semibold text-lg hover:bg-[#2C2F5A] hover:text-white transition-all duration-300"
+                onClick={() => window.location.href = '/dashboard'}
+              >
+                Ir a mi Panel
+              </button>
+            )}
           </div>
         </div>
       </div>

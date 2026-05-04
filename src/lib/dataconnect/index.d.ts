@@ -24,6 +24,16 @@ export interface CreateUserVariables {
   id: string;
   email: string;
   role: string;
+  status: string;
+}
+
+export interface GetAllUsersData {
+  users: ({
+    id: string;
+    email: string;
+    role: string;
+    status: string;
+  } & User_Key)[];
 }
 
 export interface GetUserData {
@@ -31,11 +41,30 @@ export interface GetUserData {
     id: string;
     email: string;
     role: string;
+    status: string;
   } & User_Key;
 }
 
 export interface GetUserVariables {
   id: string;
+}
+
+export interface UpdateUserRoleData {
+  user_update?: User_Key | null;
+}
+
+export interface UpdateUserRoleVariables {
+  id: string;
+  role: string;
+}
+
+export interface UpdateUserStatusData {
+  user_update?: User_Key | null;
+}
+
+export interface UpdateUserStatusVariables {
+  id: string;
+  status: string;
 }
 
 export interface User_Key {
@@ -54,6 +83,30 @@ export const createUserRef: CreateUserRef;
 
 export function createUser(vars: CreateUserVariables): MutationPromise<CreateUserData, CreateUserVariables>;
 export function createUser(dc: DataConnect, vars: CreateUserVariables): MutationPromise<CreateUserData, CreateUserVariables>;
+
+interface UpdateUserStatusRef {
+  /* Allow users to create refs without passing in DataConnect */
+  (vars: UpdateUserStatusVariables): MutationRef<UpdateUserStatusData, UpdateUserStatusVariables>;
+  /* Allow users to pass in custom DataConnect instances */
+  (dc: DataConnect, vars: UpdateUserStatusVariables): MutationRef<UpdateUserStatusData, UpdateUserStatusVariables>;
+  operationName: string;
+}
+export const updateUserStatusRef: UpdateUserStatusRef;
+
+export function updateUserStatus(vars: UpdateUserStatusVariables): MutationPromise<UpdateUserStatusData, UpdateUserStatusVariables>;
+export function updateUserStatus(dc: DataConnect, vars: UpdateUserStatusVariables): MutationPromise<UpdateUserStatusData, UpdateUserStatusVariables>;
+
+interface UpdateUserRoleRef {
+  /* Allow users to create refs without passing in DataConnect */
+  (vars: UpdateUserRoleVariables): MutationRef<UpdateUserRoleData, UpdateUserRoleVariables>;
+  /* Allow users to pass in custom DataConnect instances */
+  (dc: DataConnect, vars: UpdateUserRoleVariables): MutationRef<UpdateUserRoleData, UpdateUserRoleVariables>;
+  operationName: string;
+}
+export const updateUserRoleRef: UpdateUserRoleRef;
+
+export function updateUserRole(vars: UpdateUserRoleVariables): MutationPromise<UpdateUserRoleData, UpdateUserRoleVariables>;
+export function updateUserRole(dc: DataConnect, vars: UpdateUserRoleVariables): MutationPromise<UpdateUserRoleData, UpdateUserRoleVariables>;
 
 interface CheckAnyUserExistsRef {
   /* Allow users to create refs without passing in DataConnect */
@@ -78,4 +131,16 @@ export const getUserRef: GetUserRef;
 
 export function getUser(vars: GetUserVariables, options?: ExecuteQueryOptions): QueryPromise<GetUserData, GetUserVariables>;
 export function getUser(dc: DataConnect, vars: GetUserVariables, options?: ExecuteQueryOptions): QueryPromise<GetUserData, GetUserVariables>;
+
+interface GetAllUsersRef {
+  /* Allow users to create refs without passing in DataConnect */
+  (): QueryRef<GetAllUsersData, undefined>;
+  /* Allow users to pass in custom DataConnect instances */
+  (dc: DataConnect): QueryRef<GetAllUsersData, undefined>;
+  operationName: string;
+}
+export const getAllUsersRef: GetAllUsersRef;
+
+export function getAllUsers(options?: ExecuteQueryOptions): QueryPromise<GetAllUsersData, undefined>;
+export function getAllUsers(dc: DataConnect, options?: ExecuteQueryOptions): QueryPromise<GetAllUsersData, undefined>;
 

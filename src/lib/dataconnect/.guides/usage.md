@@ -14,17 +14,26 @@ If a user is not using a supported framework, they can use the generated SDK dir
 Here's an example of how to use it with the first 5 operations:
 
 ```js
-import { createUser, checkAnyUserExists, getUser } from '@firebasegen/default-connector';
+import { createUser, updateUserStatus, updateUserRole, checkAnyUserExists, getUser, getAllUsers } from '@firebasegen/default-connector';
 
 
 // Operation CreateUser:  For variables, look at type CreateUserVars in ../index.d.ts
 const { data } = await CreateUser(dataConnect, createUserVars);
+
+// Operation UpdateUserStatus:  For variables, look at type UpdateUserStatusVars in ../index.d.ts
+const { data } = await UpdateUserStatus(dataConnect, updateUserStatusVars);
+
+// Operation UpdateUserRole:  For variables, look at type UpdateUserRoleVars in ../index.d.ts
+const { data } = await UpdateUserRole(dataConnect, updateUserRoleVars);
 
 // Operation CheckAnyUserExists: 
 const { data } = await CheckAnyUserExists(dataConnect);
 
 // Operation GetUser:  For variables, look at type GetUserVars in ../index.d.ts
 const { data } = await GetUser(dataConnect, getUserVars);
+
+// Operation GetAllUsers: 
+const { data } = await GetAllUsers(dataConnect);
 
 
 ```

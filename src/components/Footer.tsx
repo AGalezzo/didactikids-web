@@ -6,7 +6,7 @@ export default function Footer() {
   const { setIsLoginModalOpen } = useStore();
 
   return (
-    <footer id="contacto" className="bg-gray-900 text-white py-8 md:py-12">
+    <footer id="contacto" className="bg-[#2C2F5A] text-white py-12 md:py-16">
       <div className="max-w-7xl mx-auto px-4 md:px-8 lg:px-16">
         <div className="grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-8 mb-6 md:mb-8">
           <div className="col-span-2 md:col-span-1">
@@ -23,11 +23,11 @@ export default function Footer() {
           </div>
           <div>
             <h4 className="font-display font-bold text-base md:text-lg mb-3">Enlaces</h4>
-            <ul className="space-y-2 text-xs md:text-sm text-gray-400">
-              <li><a href="#inicio" className="hover:text-primary transition-all">Inicio</a></li>
-              <li><a href="#catalogo" className="hover:text-primary transition-all">Catálogo</a></li>
-              <li><a href="#software" className="hover:text-primary transition-all">Software</a></li>
-              <li><button onClick={() => setIsLoginModalOpen(true)} className="hover:text-primary transition-all">Mi Cuenta</button></li>
+            <ul className="space-y-2 text-xs md:text-sm text-gray-300">
+              <li><a href="#inicio" className="hover:text-[#EAE4DC] transition-all">Inicio</a></li>
+              <li><a href="#catalogo" className="hover:text-[#EAE4DC] transition-all">Catálogo</a></li>
+              <li><a href="#software" className="hover:text-[#EAE4DC] transition-all">Software</a></li>
+              <li><button onClick={() => setIsLoginModalOpen(true)} className="hover:text-[#EAE4DC] transition-all">Mi Cuenta</button></li>
             </ul>
           </div>
           <div>
@@ -60,8 +60,11 @@ export default function Footer() {
 
         <div className="border-t border-gray-800 pt-4">
           <div className="flex flex-col sm:flex-row justify-between items-center gap-2 text-center sm:text-left">
-            <p className="text-gray-500 text-[10px] md:text-xs">
+            <p className="text-gray-500 text-[10px] md:text-xs flex items-center gap-2">
               © {new Date().getFullYear()} DIDACTIKIDS S.A.S. Todos los derechos reservados • NIT: 901.859.229 - 5
+              <span className="bg-[#2C2F5A] px-2 py-0.5 rounded text-[10px] border border-[#EAE4DC]/20">
+                v{process.env.NEXT_PUBLIC_APP_VERSION || '1.0.0-local'}
+              </span>
             </p>
             <div className="flex items-center gap-1">
               <i className="material-icons text-gray-500 text-xs">lock</i>

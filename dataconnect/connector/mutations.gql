@@ -1,3 +1,11 @@
-mutation CreateUser($id: String!, $email: String!, $role: String!) @auth(level: PUBLIC) {
-  user_insert(data: { id: $id, email: $email, role: $role })
+mutation CreateUser($id: String!, $email: String!, $role: String!, $status: String!) @auth(level: PUBLIC) {
+  user_insert(data: { id: $id, email: $email, role: $role, status: $status })
+}
+
+mutation UpdateUserStatus($id: String!, $status: String!) @auth(level: PUBLIC) {
+  user_update(id: $id, data: { status: $status })
+}
+
+mutation UpdateUserRole($id: String!, $role: String!) @auth(level: PUBLIC) {
+  user_update(id: $id, data: { role: $role })
 }
