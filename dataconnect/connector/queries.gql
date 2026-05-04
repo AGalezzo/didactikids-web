@@ -1,0 +1,13 @@
+query CheckAnyUserExists @auth(level: PUBLIC) {
+  users(limit: 1) {
+    id
+  }
+}
+
+query GetUser($id: String!) @auth(level: PUBLIC) {
+  user(id: $id) {
+    id
+    email
+    role
+  }
+}

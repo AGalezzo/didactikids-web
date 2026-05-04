@@ -1,0 +1,228 @@
+"use client";
+
+import { useState } from 'react';
+import { useStore } from '@/context/StoreContext';
+import { auth } from '@/lib/firebase';
+import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from 'firebase/auth';
+import { createUser, checkAnyUserExists } from '@/lib/dataconnect';
+
+export default function Modals() {
+  const { cart, clearCart, isLoginModalOpen, setIsLoginModalOpen, isPaymentModalOpen, setIsPaymentModalOpen } = useStore();
+  const [loginTab, setLoginTab] = useState<'login' | 'register'>('login');
+  
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [name, setName] = useState('');
+  const [loading, setLoading] = useState(false);
+
+  const total = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+
+  const handleLogin = async () => {
+    if (!email || !password) return alert('Por favor ingresa correo y contraseña');
+    setLoading(true);
+    try {
+      await signInWithEmailAndPassword(auth, email, password);
+      alert('✅ ¡Bienvenido de vuelta!');
+      setIsLoginModalOpen(false);
+    } catch (error: any) {
+      alert('Error al iniciar sesión: ' + error.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleRegister = async () => {
+    if (!email || !password || !name) return alert('Por favor completa todos los campos');
+    setLoading(true);
+    try {
+      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+      const uid = userCredential.user.uid;
+      
+      let role = 'user';
+      try {
+        const result = await checkAnyUserExists();
+        if (!result.data || result.data.users.length === 0) {
+          role = 'admin';
+        }
+      } catch (e) {
+        console.error("No se pudo verificar Data Connect. Asegúrate de haberlo inicializado en Firebase.", e);
+        role = 'admin'; // Fallback a admin temporal para modo prueba local
+      }
+      
+      try {
+         await createUser({ id: uid, email, role });
+      } catch (e) {
+         console.error("Error al registrar en SQL Connect.", e);
+      }
+      
+      alert(role === 'admin' ? '✅ ¡Cuenta de ADMINISTRADOR creada exitosamente!' : '✅ ¡Cuenta creada exitosamente!');
+      setIsLoginModalOpen(false);
+    } catch (error: any) {
+      alert('Error al registrar: ' + error.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleAdminLogin = () => {
+    alert('🔑 Modo Administrador Activado\\n\\nAcceso a:\\n- Gestión de productos\\n- Ver pedidos\\n- Reportes de ventas');
+    setIsLoginModalOpen(false);
+  };
+
+  const processPayment = () => {
+    alert(`✅ ¡Pago procesado exitosamente!\\n\\nTotal: $${total.toLocaleString('es-CO')}\\n\\n📦 Envío a:\\nCL 52 #18-72, Barranquilla, Atlántico\\n\\n📞 Contacto: 3024673945`);
+    clearCart();
+    setIsPaymentModalOpen(false);
+  };
+
+  return (
+    <>
+      {/* Login Modal */}
+      {isLoginModalOpen && (
+        <div className="fixed inset-0 z-[70] flex items-center justify-center bg-black/40 backdrop-blur-sm" onClick={() => setIsLoginModalOpen(false)}>
+          <div className="bg-white w-full max-w-md mx-4 p-6 md:p-8" onClick={e => e.stopPropagation()}>
+            <div className="flex justify-between items-center mb-6">
+              <h2 className="font-display text-2xl md:text-3xl font-bold text-primary">Mi Cuenta</h2>
+              <button onClick={() => setIsLoginModalOpen(false)} className="text-gray-400 hover:text-primary cursor-pointer">
+                <i className="material-icons">close</i>
+              </button>
+            </div>
+
+            <div className="flex gap-0 mb-4 bg-cream p-1">
+              <button 
+                onClick={() => setLoginTab('login')}
+                className={`flex-1 py-2.5 text-sm font-semibold transition-all cursor-pointer border-none ${loginTab === 'login' ? 'bg-white text-primary' : 'bg-transparent text-gray-600'}`}
+              >
+                Iniciar Sesión
+              </button>
+              <button 
+                onClick={() => setLoginTab('register')}
+                className={`flex-1 py-2.5 text-sm font-semibold transition-all cursor-pointer border-none ${loginTab === 'register' ? 'bg-white text-primary' : 'bg-transparent text-gray-600'}`}
+              >
+                Registrarse
+              </button>
+            </div>
+
+            {loginTab === 'login' ? (
+              <div className="space-y-4">
+                <div>
+                  <label className="block text-xs font-semibold mb-1.5 uppercase tracking-wider text-gray-600">Correo Electrónico</label>
+                  <input type="email" value={email} onChange={e => setEmail(e.target.value)} placeholder="correo@ejemplo.com" className="w-full p-3 border border-cream text-sm focus:outline-none focus:border-primary" />
+                </div>
+                <div>
+                  <label className="block text-xs font-semibold mb-1.5 uppercase tracking-wider text-gray-600">Contraseña</label>
+                  <input type="password" value={password} onChange={e => setPassword(e.target.value)} placeholder="••••••••" className="w-full p-3 border border-cream text-sm focus:outline-none focus:border-primary" />
+                </div>
+                <button onClick={handleLogin} disabled={loading} className="btn-primary w-full text-sm py-3 text-center opacity-100 disabled:opacity-50">
+                  {loading ? 'Cargando...' : 'Iniciar Sesión'}
+                </button>
+              </div>
+            ) : (
+              <div className="space-y-4">
+                <div>
+                  <label className="block text-xs font-semibold mb-1.5 uppercase tracking-wider text-gray-600">Nombre Completo</label>
+                  <input type="text" value={name} onChange={e => setName(e.target.value)} placeholder="Tu nombre" className="w-full p-3 border border-cream text-sm focus:outline-none focus:border-primary" />
+                </div>
+                <div>
+                  <label className="block text-xs font-semibold mb-1.5 uppercase tracking-wider text-gray-600">Correo Electrónico</label>
+                  <input type="email" value={email} onChange={e => setEmail(e.target.value)} placeholder="correo@ejemplo.com" className="w-full p-3 border border-cream text-sm focus:outline-none focus:border-primary" />
+                </div>
+                <div>
+                  <label className="block text-xs font-semibold mb-1.5 uppercase tracking-wider text-gray-600">Contraseña</label>
+                  <input type="password" value={password} onChange={e => setPassword(e.target.value)} placeholder="••••••••" className="w-full p-3 border border-cream text-sm focus:outline-none focus:border-primary" />
+                </div>
+                <button onClick={handleRegister} disabled={loading} className="btn-primary w-full text-sm py-3 text-center opacity-100 disabled:opacity-50">
+                  {loading ? 'Cargando...' : 'Crear Cuenta'}
+                </button>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+
+      {/* Payment Modal */}
+      {isPaymentModalOpen && (
+        <div className="fixed inset-0 z-[70] flex items-center justify-center bg-black/40 backdrop-blur-sm" onClick={() => setIsPaymentModalOpen(false)}>
+          <div className="bg-white w-full max-w-2xl mx-4 p-6 md:p-8 max-h-[90vh] overflow-y-auto" onClick={e => e.stopPropagation()}>
+            <div className="flex justify-between items-center mb-6">
+              <div>
+                <h2 className="font-display text-2xl md:text-3xl font-bold text-primary mb-1">Pasarela de Pagos</h2>
+                <p className="text-xs md:text-sm text-gray-500">Integración segura con ePayu</p>
+              </div>
+              <button onClick={() => setIsPaymentModalOpen(false)} className="text-gray-400 hover:text-primary cursor-pointer">
+                <i className="material-icons">close</i>
+              </button>
+            </div>
+
+            <div className="grid md:grid-cols-2 gap-6">
+              <div className="space-y-4">
+                <div>
+                  <label className="block text-xs font-semibold mb-2 uppercase tracking-wider text-gray-600">Método de Pago</label>
+                  <div className="grid grid-cols-3 gap-2 mb-4">
+                    <div className="border-2 border-primary p-3 text-center cursor-pointer bg-blue-50">
+                      <i className="material-icons text-primary text-xl mb-1">credit_card</i>
+                      <p className="text-xs font-medium">Tarjeta</p>
+                    </div>
+                    <div className="border-2 border-cream p-3 text-center cursor-pointer hover:border-primary bg-white transition-colors">
+                      <i className="material-icons text-primary text-xl mb-1">account_balance</i>
+                      <p className="text-xs font-medium">PSE</p>
+                    </div>
+                    <div className="border-2 border-cream p-3 text-center cursor-pointer hover:border-primary bg-white transition-colors">
+                      <i className="material-icons text-primary text-xl mb-1">payments</i>
+                      <p className="text-xs font-medium">Efectivo</p>
+                    </div>
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-xs font-semibold mb-1.5 uppercase tracking-wider text-gray-600">Nombre del Titular</label>
+                  <input type="text" placeholder="ANDERSON GALEZZO" className="w-full p-3 border border-cream text-sm focus:outline-none focus:border-primary" />
+                </div>
+                <div>
+                  <label className="block text-xs font-semibold mb-1.5 uppercase tracking-wider text-gray-600">Número de Tarjeta</label>
+                  <input type="text" placeholder="4242 4242 4242 4242" className="w-full p-3 border border-cream text-sm focus:outline-none focus:border-primary" />
+                </div>
+                <div className="grid grid-cols-2 gap-3">
+                  <div>
+                    <label className="block text-xs font-semibold mb-1.5 uppercase tracking-wider text-gray-600">Expiración</label>
+                    <input type="text" placeholder="MM/AA" className="w-full p-3 border border-cream text-sm focus:outline-none focus:border-primary" />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-semibold mb-1.5 uppercase tracking-wider text-gray-600">CVV</label>
+                    <input type="text" placeholder="123" className="w-full p-3 border border-cream text-sm focus:outline-none focus:border-primary" />
+                  </div>
+                </div>
+                <div>
+                  <label className="block text-xs font-semibold mb-1.5 uppercase tracking-wider text-gray-600">Dirección de Envío</label>
+                  <input type="text" placeholder="CL 52 #18-72, Barranquilla" className="w-full p-3 border border-cream text-sm focus:outline-none focus:border-primary" />
+                </div>
+                <button onClick={processPayment} className="btn-primary w-full py-3 flex items-center justify-center gap-2 text-sm">
+                  <i className="material-icons text-lg">lock</i>
+                  <span>Pagar con ePayu</span>
+                </button>
+              </div>
+
+              <div className="bg-cream p-4 md:p-6">
+                <h4 className="font-display font-bold text-lg mb-4">Resumen del Pedido</h4>
+                <div className="space-y-2 mb-4">
+                  {cart.map((item, idx) => (
+                    <div key={idx} className="flex justify-between text-xs md:text-sm">
+                      <span className="text-gray-600">{item.name} x{item.quantity}</span>
+                      <span className="font-display font-bold text-primary">${(item.price * item.quantity).toLocaleString('es-CO')}</span>
+                    </div>
+                  ))}
+                </div>
+                <div className="border-t border-white pt-3">
+                  <div className="flex justify-between items-center">
+                    <span className="font-display font-bold text-base md:text-lg">Total</span>
+                    <span className="font-display font-bold text-xl md:text-2xl text-primary">${total.toLocaleString('es-CO')}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+    </>
+  );
+}

@@ -1,0 +1,3 @@
+mutation CreateUser($id: String!, $email: String!, $role: String!) @auth(level: PUBLIC) {
+  user_insert(data: { id: $id, email: $email, role: $role })
+}

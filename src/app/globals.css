@@ -1,26 +1,93 @@
 @import "tailwindcss";
 
+@theme {
+  --color-primary: #B23A2A;
+  --color-secondary: #2C2F5A;
+  --color-cream: #EAE4DC;
+  --color-darktext: #2B2B2B;
+  
+  --font-display: var(--font-playfair);
+  --font-body: var(--font-poppins);
+}
+
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  --background: #F7F7F5;
+  --foreground: #2B2B2B;
 }
 
 body {
-  background: var(--background);
+  background-color: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-body);
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* Scrollbar personalizado */
+::-webkit-scrollbar {
+  width: 4px;
+  height: 4px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--color-cream);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--color-primary);
+  border-radius: 2px;
+}
+
+@layer components {
+  .btn-primary {
+      background-color: var(--color-primary);
+      color: #fff;
+      padding: 8px 24px;
+      border: none;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      cursor: pointer;
+  }
+
+  .btn-primary:hover {
+      background-color: var(--color-secondary);
+      transform: translateY(-1px);
+      box-shadow: 0 2px 8px rgba(178, 58, 42, 0.2);
+  }
+
+  .btn-secondary {
+      background-color: transparent;
+      color: var(--color-secondary);
+      padding: 8px 24px;
+      border: 1.5px solid var(--color-secondary);
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      cursor: pointer;
+  }
+
+  .btn-secondary:hover {
+      background-color: var(--color-secondary);
+      color: #fff;
+  }
+  
+  .category-tab {
+    @apply px-3 py-1.5 border text-xs md:text-sm font-medium whitespace-nowrap transition-all;
+  }
+  
+  .category-tab.active {
+    @apply border-cream bg-primary text-white;
+  }
+  
+  .category-tab.inactive {
+    @apply border-cream hover:border-primary hover:text-primary;
+  }
+}
+
+* {
+  transition: all 0.2s ease;
+}
+
+.material-icons {
+  width: 1em;
 }

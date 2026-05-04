@@ -1,0 +1,11 @@
+specVersion: "v1alpha"
+serviceId: "didactikids-web"
+location: "us-central1"
+schema:
+  source: "./schema"
+  datasource:
+    postgresql:
+      database: "didactikids"
+      cloudSql:
+        instanceId: "didactikids-sql"
+connectorDirs: ["./connector"]
