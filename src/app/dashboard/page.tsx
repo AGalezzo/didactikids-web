@@ -43,12 +43,13 @@ export default function DashboardIndex() {
           // Asegurar que el dueño siempre sea admin, incluso si está en la BD con otro rol
           if (user.email === 'galezzoanderson@gmail.com') {
             if (role !== 'admin' || status !== 'approved') {
+              // Actualizamos localmente primero para asegurar el acceso aunque la red falle
+              role = 'admin';
+              status = 'approved';
               try {
                 const { updateUserRole, updateUserStatus } = await import('@/lib/dataconnect');
-                await updateUserRole({ id: user.uid, role: 'admin' });
-                await updateUserStatus({ id: user.uid, status: 'approved' });
-                role = 'admin';
-                status = 'approved';
+                updateUserRole({ id: user.uid, role: 'admin' }).catch(console.error);
+                updateUserStatus({ id: user.uid, status: 'approved' }).catch(console.error);
               } catch (e) {
                 console.error("Error auto-promoting owner to admin", e);
               }
