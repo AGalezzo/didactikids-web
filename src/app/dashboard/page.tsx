@@ -17,15 +17,31 @@ export default function DashboardIndex() {
       }
       try {
         const result = await getUser({ id: user.uid });
-        if (result.data && result.data.user) {
-          let { role, status } = result.data.user;
+        let dbUser = result.data?.user;
+        
+        // Si el usuario es el admin maestro y no existe en la BD, lo creamos
+        if (!dbUser && user.email === 'galezzoanderson@gmail.com') {
+          try {
+            const { createUser } = await import('@/lib/dataconnect');
+            await createUser({
+              id: user.uid,
+              email: user.email,
+              role: 'admin',
+              status: 'approved'
+            });
+            dbUser = { role: 'admin', status: 'approved', email: user.email, id: user.uid };
+          } catch (e) {
+            console.error("Error creating master admin in DB", e);
+            // Fallback manual en memoria
+            dbUser = { role: 'admin', status: 'approved', email: user.email, id: user.uid };
+          }
+        }
+
+        if (dbUser) {
+          let { role, status } = dbUser;
           
-          // Fallback para asegurar que el dueño siempre sea admin
-          if (
-            user.email === 'ventas@didactikids.co' || 
-            user.email === 'ventas@didactikids.com' ||
-            (user.email && user.email.includes('galezzoanderson'))
-          ) {
+          // Asegurar que el dueño siempre sea admin, incluso si está en la BD con otro rol
+          if (user.email === 'galezzoanderson@gmail.com') {
             if (role !== 'admin' || status !== 'approved') {
               try {
                 const { updateUserRole, updateUserStatus } = await import('@/lib/dataconnect');
