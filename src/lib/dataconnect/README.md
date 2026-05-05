@@ -24,6 +24,7 @@ This README will guide you through the process of using the generated JavaScript
   - [*CreateOrder*](#createorder)
   - [*CreateOrderItem*](#createorderitem)
   - [*UpdateOrderStatus*](#updateorderstatus)
+  - [*DeleteAllUsers*](#deleteallusers)
 
 # Accessing the connector
 A connector is a collection of Queries and Mutations. One SDK is generated for each connector - this SDK is generated for the connector `default`. You can find more information about connectors in the [Data Connect documentation](https://firebase.google.com/docs/data-connect#how-does).
@@ -1752,6 +1753,97 @@ console.log(data.order_update);
 executeMutation(ref).then((response) => {
   const data = response.data;
   console.log(data.order_update);
+});
+```
+
+## DeleteAllUsers
+You can execute the `DeleteAllUsers` mutation using the following action shortcut function, or by calling `executeMutation()` after calling the following `MutationRef` function, both of which are defined in [dataconnect/index.d.ts](./index.d.ts):
+```typescript
+deleteAllUsers(): MutationPromise<DeleteAllUsersData, undefined>;
+
+interface DeleteAllUsersRef {
+  ...
+  /* Allow users to create refs without passing in DataConnect */
+  (): MutationRef<DeleteAllUsersData, undefined>;
+}
+export const deleteAllUsersRef: DeleteAllUsersRef;
+```
+You can also pass in a `DataConnect` instance to the action shortcut function or `MutationRef` function.
+```typescript
+deleteAllUsers(dc: DataConnect): MutationPromise<DeleteAllUsersData, undefined>;
+
+interface DeleteAllUsersRef {
+  ...
+  (dc: DataConnect): MutationRef<DeleteAllUsersData, undefined>;
+}
+export const deleteAllUsersRef: DeleteAllUsersRef;
+```
+
+If you need the name of the operation without creating a ref, you can retrieve the operation name by calling the `operationName` property on the deleteAllUsersRef:
+```typescript
+const name = deleteAllUsersRef.operationName;
+console.log(name);
+```
+
+### Variables
+The `DeleteAllUsers` mutation has no variables.
+### Return Type
+Recall that executing the `DeleteAllUsers` mutation returns a `MutationPromise` that resolves to an object with a `data` property.
+
+The `data` property is an object of type `DeleteAllUsersData`, which is defined in [dataconnect/index.d.ts](./index.d.ts). It has the following fields:
+```typescript
+export interface DeleteAllUsersData {
+  user_deleteMany: number;
+}
+```
+### Using `DeleteAllUsers`'s action shortcut function
+
+```typescript
+import { getDataConnect } from 'firebase/data-connect';
+import { connectorConfig, deleteAllUsers } from '@firebasegen/default-connector';
+
+
+// Call the `deleteAllUsers()` function to execute the mutation.
+// You can use the `await` keyword to wait for the promise to resolve.
+const { data } = await deleteAllUsers();
+
+// You can also pass in a `DataConnect` instance to the action shortcut function.
+const dataConnect = getDataConnect(connectorConfig);
+const { data } = await deleteAllUsers(dataConnect);
+
+console.log(data.user_deleteMany);
+
+// Or, you can use the `Promise` API.
+deleteAllUsers().then((response) => {
+  const data = response.data;
+  console.log(data.user_deleteMany);
+});
+```
+
+### Using `DeleteAllUsers`'s `MutationRef` function
+
+```typescript
+import { getDataConnect, executeMutation } from 'firebase/data-connect';
+import { connectorConfig, deleteAllUsersRef } from '@firebasegen/default-connector';
+
+
+// Call the `deleteAllUsersRef()` function to get a reference to the mutation.
+const ref = deleteAllUsersRef();
+
+// You can also pass in a `DataConnect` instance to the `MutationRef` function.
+const dataConnect = getDataConnect(connectorConfig);
+const ref = deleteAllUsersRef(dataConnect);
+
+// Call `executeMutation()` on the reference to execute the mutation.
+// You can use the `await` keyword to wait for the promise to resolve.
+const { data } = await executeMutation(ref);
+
+console.log(data.user_deleteMany);
+
+// Or, you can use the `Promise` API.
+executeMutation(ref).then((response) => {
+  const data = response.data;
+  console.log(data.user_deleteMany);
 });
 ```
 

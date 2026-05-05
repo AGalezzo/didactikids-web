@@ -29,3 +29,7 @@ mutation CreateOrderItem($orderId: String!, $productId: String!, $productName: S
 mutation UpdateOrderStatus($id: String!, $status: String!) @auth(level: PUBLIC) {
   order_update(id: $id, data: { status: $status })
 }
+
+mutation DeleteAllUsers @auth(level: PUBLIC) {
+  user_deleteMany(where: { id: { ne: "" } })
+}

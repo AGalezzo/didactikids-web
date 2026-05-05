@@ -101,6 +101,18 @@ export function updateOrderStatus(dcOrVars, vars) {
   return executeMutation(updateOrderStatusRef(dcInstance, inputVars));
 }
 
+export const deleteAllUsersRef = (dc) => {
+  const { dc: dcInstance} = validateArgs(connectorConfig, dc, undefined);
+  dcInstance._useGeneratedSdk();
+  return mutationRef(dcInstance, 'DeleteAllUsers');
+}
+deleteAllUsersRef.operationName = 'DeleteAllUsers';
+
+export function deleteAllUsers(dc) {
+  const { dc: dcInstance, vars: inputVars } = validateArgs(connectorConfig, dc, undefined);
+  return executeMutation(deleteAllUsersRef(dcInstance, inputVars));
+}
+
 export const checkAnyUserExistsRef = (dc) => {
   const { dc: dcInstance} = validateArgs(connectorConfig, dc, undefined);
   dcInstance._useGeneratedSdk();

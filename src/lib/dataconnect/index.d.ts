@@ -66,6 +66,10 @@ export interface CreateUserVariables {
   status: string;
 }
 
+export interface DeleteAllUsersData {
+  user_deleteMany: number;
+}
+
 export interface DeleteProductData {
   product_delete?: Product_Key | null;
 }
@@ -294,6 +298,18 @@ export const updateOrderStatusRef: UpdateOrderStatusRef;
 
 export function updateOrderStatus(vars: UpdateOrderStatusVariables): MutationPromise<UpdateOrderStatusData, UpdateOrderStatusVariables>;
 export function updateOrderStatus(dc: DataConnect, vars: UpdateOrderStatusVariables): MutationPromise<UpdateOrderStatusData, UpdateOrderStatusVariables>;
+
+interface DeleteAllUsersRef {
+  /* Allow users to create refs without passing in DataConnect */
+  (): MutationRef<DeleteAllUsersData, undefined>;
+  /* Allow users to pass in custom DataConnect instances */
+  (dc: DataConnect): MutationRef<DeleteAllUsersData, undefined>;
+  operationName: string;
+}
+export const deleteAllUsersRef: DeleteAllUsersRef;
+
+export function deleteAllUsers(): MutationPromise<DeleteAllUsersData, undefined>;
+export function deleteAllUsers(dc: DataConnect): MutationPromise<DeleteAllUsersData, undefined>;
 
 interface CheckAnyUserExistsRef {
   /* Allow users to create refs without passing in DataConnect */
