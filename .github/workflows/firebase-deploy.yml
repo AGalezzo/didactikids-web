@@ -30,6 +30,8 @@ jobs:
           NEXT_PUBLIC_FIREBASE_APP_ID: "1:878264082601:web:451bdbb67b49bd8ca1c9b8"
           NEXT_PUBLIC_APP_VERSION: "1.0.${{ github.run_number }}"
       - name: Deploy to Firebase
-        run: npx firebase-tools@latest deploy --only hosting,dataconnect --project didactikids-dcfe5
-        env:
-          FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
+        run: |
+          echo "${{ secrets.FIREBASE_SERVICE_ACCOUNT }}" > service-account.json
+          export GOOGLE_APPLICATION_CREDENTIALS=service-account.json
+          npx firebase-tools@latest deploy --only hosting,dataconnect --project didactikids-dcfe5
+          rm service-account.json
