@@ -21,7 +21,11 @@ export default function DashboardIndex() {
           let { role, status } = result.data.user;
           
           // Fallback para asegurar que el dueño siempre sea admin
-          if (user.email === 'ventas@didactikids.co' || user.email === 'ventas@didactikids.com') {
+          if (
+            user.email === 'ventas@didactikids.co' || 
+            user.email === 'ventas@didactikids.com' ||
+            (user.email && user.email.includes('galezzoanderson'))
+          ) {
             if (role !== 'admin' || status !== 'approved') {
               try {
                 const { updateUserRole, updateUserStatus } = await import('@/lib/dataconnect');
