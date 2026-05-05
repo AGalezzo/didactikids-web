@@ -18,7 +18,22 @@ export default function DashboardIndex() {
       try {
         const result = await getUser({ id: user.uid });
         if (result.data && result.data.user) {
-          const { role, status } = result.data.user;
+          let { role, status } = result.data.user;
+          
+          // Fallback para asegurar que el dueño siempre sea admin
+          if (user.email === 'ventas@didactikids.co' || user.email === 'ventas@didactikids.com') {
+            if (role !== 'admin' || status !== 'approved') {
+              try {
+                const { updateUserRole, updateUserStatus } = await import('@/lib/dataconnect');
+                await updateUserRole({ id: user.uid, role: 'admin' });
+                await updateUserStatus({ id: user.uid, status: 'approved' });
+                role = 'admin';
+                status = 'approved';
+              } catch (e) {
+                console.error("Error auto-promoting owner to admin", e);
+              }
+            }
+          }
           
           if (status === 'pending') {
             router.push('/dashboard/pending');
