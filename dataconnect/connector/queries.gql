@@ -21,3 +21,51 @@ query GetAllUsers @auth(level: PUBLIC) {
     status
   }
 }
+
+query GetProducts @auth(level: PUBLIC) {
+  products {
+    id
+    name
+    description
+    category
+    price
+    stock
+    code
+  }
+}
+
+query GetOrdersByUser($userId: String!) @auth(level: PUBLIC) {
+  orders(where: { userId: { eq: $userId } }, orderBy: [{ createdAt: DESC }]) {
+    id
+    userId
+    total
+    status
+    createdAt
+    address
+    contact
+    paymentMethod
+  }
+}
+
+query GetAllOrders @auth(level: PUBLIC) {
+  orders(orderBy: [{ createdAt: DESC }]) {
+    id
+    userId
+    total
+    status
+    createdAt
+    address
+    contact
+    paymentMethod
+  }
+}
+
+query GetOrderItems($orderId: String!) @auth(level: PUBLIC) {
+  orderItems(where: { orderId: { eq: $orderId } }) {
+    id
+    productId
+    productName
+    quantity
+    price
+  }
+}

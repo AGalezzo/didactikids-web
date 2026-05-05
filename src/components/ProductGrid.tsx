@@ -1,7 +1,9 @@
 "use client";
 
 import { useStore } from '@/context/StoreContext';
-import { products } from '@/lib/data';
+import { products as localProducts } from '@/lib/data';
+import { getProducts } from '@/lib/dataconnect';
+import { useEffect, useState } from 'react';
 
 const categories = [
   { id: 'all', name: 'Todos' },
@@ -17,6 +19,15 @@ const categories = [
 
 export default function ProductGrid() {
   const { currentCategory, setCurrentCategory, addToCart } = useStore();
+  const [products, setProducts] = useState<any[]>(localProducts);
+
+  useEffect(() => {
+    getProducts().then(res => {
+      if (res.data && res.data.products.length > 0) {
+        setProducts(res.data.products);
+      }
+    }).catch(e => console.error(e));
+  }, []);
 
   const filteredProducts = currentCategory === 'all'
     ? products

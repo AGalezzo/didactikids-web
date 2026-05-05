@@ -4,10 +4,10 @@ import { useState } from 'react';
 import { useStore } from '@/context/StoreContext';
 import { auth } from '@/lib/firebase';
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from 'firebase/auth';
-import { createUser, checkAnyUserExists } from '@/lib/dataconnect';
+import { createUser, checkAnyUserExists, createOrder, createOrderItem } from '@/lib/dataconnect';
 
 export default function Modals() {
-  const { cart, clearCart, isLoginModalOpen, setIsLoginModalOpen, isPaymentModalOpen, setIsPaymentModalOpen } = useStore();
+  const { cart, clearCart, isLoginModalOpen, setIsLoginModalOpen, isPaymentModalOpen, setIsPaymentModalOpen, user } = useStore();
   const [loginTab, setLoginTab] = useState<'login' | 'register'>('login');
   
   const [email, setEmail] = useState('');
@@ -70,15 +70,52 @@ export default function Modals() {
     }
   };
 
-  const handleAdminLogin = () => {
-    alert('🔑 Modo Administrador Activado\\n\\nAcceso a:\\n- Gestión de productos\\n- Ver pedidos\\n- Reportes de ventas');
-    setIsLoginModalOpen(false);
-  };
+  const processPayment = async () => {
+    if (!user) {
+      alert("Debes iniciar sesión para realizar una compra.");
+      setIsPaymentModalOpen(false);
+      setIsLoginModalOpen(true);
+      return;
+    }
+    if (cart.length === 0) return;
 
-  const processPayment = () => {
-    alert(`✅ ¡Pago procesado exitosamente!\\n\\nTotal: $${total.toLocaleString('es-CO')}\\n\\n📦 Envío a:\\nCL 52 #18-72, Barranquilla, Atlántico\\n\\n📞 Contacto: 3024673945`);
-    clearCart();
-    setIsPaymentModalOpen(false);
+    setLoading(true);
+    try {
+      // 1. Create order
+      const orderRef = await createOrder({
+        userId: user.uid,
+        total,
+        status: 'preparing',
+        address: 'CL 52 #18-72, Barranquilla', // hardcoded for demo
+        contact: '3024673945', // hardcoded for demo
+        paymentMethod: 'ePayu'
+      });
+      
+      const orderId = orderRef.data.order_insert?.id;
+      
+      // 2. Insert items
+      if (orderId) {
+        for (const item of cart) {
+          await createOrderItem({
+            orderId,
+            productId: item.code,
+            productName: item.name,
+            quantity: item.quantity,
+            price: item.price
+          });
+        }
+      }
+      
+      alert(`✅ ¡Pago procesado exitosamente!\\n\\nTotal: $${total.toLocaleString('es-CO')}\\n\\n📦 Envío a:\\nCL 52 #18-72, Barranquilla, Atlántico\\n\\n📞 Contacto: 3024673945`);
+      clearCart();
+      setIsPaymentModalOpen(false);
+      window.location.href = '/dashboard/client';
+    } catch (e) {
+        console.error("Error al procesar pago: ", e);
+        alert("Ocurrió un error al procesar tu pago en la base de datos.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (

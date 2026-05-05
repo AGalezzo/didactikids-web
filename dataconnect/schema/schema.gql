@@ -4,3 +4,33 @@ type User @table {
   role: String!
   status: String!
 }
+
+type Product @table {
+  id: String!
+  name: String!
+  description: String!
+  category: String!
+  price: Float!
+  stock: Int!
+  code: String!
+}
+
+type Order @table {
+  id: String! @default(expr: "uuidV4()")
+  userId: String!
+  total: Float!
+  status: String! # pending, preparing, shipped, delivered, cancelled
+  createdAt: Date! @default(expr: "request.time")
+  address: String!
+  contact: String!
+  paymentMethod: String!
+}
+
+type OrderItem @table {
+  id: String! @default(expr: "uuidV4()")
+  orderId: String!
+  productId: String!
+  productName: String!
+  quantity: Int!
+  price: Float!
+}

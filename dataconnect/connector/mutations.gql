@@ -9,3 +9,23 @@ mutation UpdateUserStatus($id: String!, $status: String!) @auth(level: PUBLIC) {
 mutation UpdateUserRole($id: String!, $role: String!) @auth(level: PUBLIC) {
   user_update(id: $id, data: { role: $role })
 }
+
+mutation CreateProduct($id: String!, $name: String!, $description: String!, $category: String!, $price: Float!, $stock: Int!, $code: String!) @auth(level: PUBLIC) {
+  product_insert(data: { id: $id, name: $name, description: $description, category: $category, price: $price, stock: $stock, code: $code })
+}
+
+mutation DeleteProduct($id: String!) @auth(level: PUBLIC) {
+  product_delete(id: $id)
+}
+
+mutation CreateOrder($userId: String!, $total: Float!, $status: String!, $address: String!, $contact: String!, $paymentMethod: String!) @auth(level: PUBLIC) {
+  order_insert(data: { userId: $userId, total: $total, status: $status, address: $address, contact: $contact, paymentMethod: $paymentMethod })
+}
+
+mutation CreateOrderItem($orderId: String!, $productId: String!, $productName: String!, $quantity: Int!, $price: Float!) @auth(level: PUBLIC) {
+  orderItem_insert(data: { orderId: $orderId, productId: $productId, productName: $productName, quantity: $quantity, price: $price })
+}
+
+mutation UpdateOrderStatus($id: String!, $status: String!) @auth(level: PUBLIC) {
+  order_update(id: $id, data: { status: $status })
+}
